@@ -104,14 +104,27 @@ void Siga::LerCSV(string arquivo_csv)
 
 int  Siga::PesquisaPorMatricula(int matricula)
 {
+    
     // TODO: implementar pesquisa por matrícula
     // Posicione o cursor para o inicio do arquivo:
+    this->file_stream.seekg(0, this->file_stream.beg); 
+   
     // Para i = 0 até n_estudante
+    for(int i=0; i<this->n_estudantes; i++){
     //    Ler estudante na posição corrente no arquivo
+        Estudante est;
+        this->file_stream.read((char *)&est, sizeof(Estudante));
     //    Testar se é a matricula procurada, se afirmativo
-    //    retorne a posiçao i.
+        if(est.ObterMatricula() == matricula){
+            //    retorne a posiçao i.
+            this->file_stream.seekp(this->n_estudantes * sizeof(Estudante), this->file_stream.beg);
+            return i;
+        }
+    
     // Fim-Para
+    }
     // Coloque o cursor para o final do arquivo
+    this->file_stream.seekp(this->n_estudantes * sizeof(Estudante), this->file_stream.beg);
     // retorne -1
     return -1;
 }
@@ -120,9 +133,15 @@ void Siga::AdicionaEstudante(Estudante est)
 {
     // TODO: Implementar cadastro de estudante
     // Passos:
+    
     // Testar se est já foi cadastrado
-    // Se já cadastrado, retorne sem fazer nada   
+    if(PesquisaPorMatricula(est.ObterMatricula())==-1){
+        this->file_stream.write((char *)&est, sizeof(Estudante));
+        this->n_estudantes = this->n_estudantes+1;
+    }
+    // Se já cadastrado, retorne sem fazer nada  
     // Caso Contrário, adicione o estudante no final do arquivobinário
+     
     // e incremente o numero de estudantes
     
 }
@@ -132,8 +151,11 @@ Estudante Siga::ObterEstudante(int idx)
     Estudante est;
     // TODO: implementar obter estudante
     // Posicione o cursor para o inicio do arquivo
+    this->file_stream.seekg(0, this->file_stream.beg);
     // Posicione o cursor para a posição idx
+    this->file_stream.seekg(idx, this->file_stream.beg);
     // Leia o estudante na posição idx
+    this->file_stream.read((char *)&est, sizeof(Estudante));
     // Retorne o estudante
     return est;
 }
@@ -160,8 +182,16 @@ void Siga::AlteraCadastroEstudante(int idx, Estudante est)
     // TODO: implementar alteração de cadastro de estudante
     // Passos:
     // Posicione o cursor para o inicio do arquivo
+    this->file_stream.seekg(0, this->file_stream.beg);
     // Posicione o cursor para a posição idx
+    this->file_stream.seekg(idx, this->file_stream.beg);
     // Escreva o estudante na posição idx
+    Estudante original;
+    this->file_stream.read((char *)&original, sizeof(Estudante));
+    original.TrocarNome(est.ObterNome());
+    original.TrocarMatricula(est.ObterMatricula());
+    original.TrocarAnoIngresso(est.ObterAnoIngresso());
+    original.TrocarIRA(est.ObterIRA());
     // Saia da função
 }
         

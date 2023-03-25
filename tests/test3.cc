@@ -1,5 +1,5 @@
 
-#include <iostream>
+
 #include <fstream>
 #include <string>
 using namespace std;
@@ -12,7 +12,7 @@ int main(int argc, char* argv[])
     Siga siga;
     siga.SetDatabase("estudantes.bin");
     int idx = siga.PesquisaPorMatricula(677);
-    if(idx == 677)
+    if(idx == 3)
         return 0;
 
     return -1;
