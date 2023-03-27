@@ -166,11 +166,29 @@ void Siga::SalvaCSV(string arquivo_csv)
     // TODO: implementar salvamento de arquivo CSV
     // Passos:
     // Abrir arquivo CSV
+    ofstream File_CSV;
+    File_CSV.open("arquivo_csv",ios::out);
+    if(!File_CSV.is_open())
+    {
+        cout << "Erro ao abrir arquivo csv" << endl;
+        return;
+    }
     // Escrever cabeçalho
     // Posicione o cursor para o inicio do arquivo binário
+    this->file_stream.seekg(0, this->file_stream.beg);
     // Para cada linha de dados
-    //    Ler um estudante do arquivo binário
-    //    Escrever o objeto estudante no arquivo CSV
+    for(int i=0; i<this->n_estudantes;i++)
+    {   //    Ler um estudante do arquivo binário
+        Estudante est;
+        LeiaEstudante(i,est); 
+        //    Escrever o objeto estudante no arquivo CSV
+        File_CSV<<est.ObterMatricula()<<",";
+        File_CSV<<est.ObterNome()<<",";
+        File_CSV<<est.ObterAnoIngresso()<<",";
+        File_CSV<<est.ObterIRA();
+    }
+     
+   File_CSV.close();
     // Fim-Para
     // Fechar arquivo CSV
    
@@ -184,14 +202,10 @@ void Siga::AlteraCadastroEstudante(int idx, Estudante est)
     // Posicione o cursor para o inicio do arquivo
     this->file_stream.seekg(0, this->file_stream.beg);
     // Posicione o cursor para a posição idx
-    this->file_stream.seekg(idx, this->file_stream.beg);
+    this->file_stream.seekg(idx*sizeof(Estudante), this->file_stream.beg);
     // Escreva o estudante na posição idx
-    Estudante original;
-    this->file_stream.read((char *)&original, sizeof(Estudante));
-    original.TrocarNome(est.ObterNome());
-    original.TrocarMatricula(est.ObterMatricula());
-    original.TrocarAnoIngresso(est.ObterAnoIngresso());
-    original.TrocarIRA(est.ObterIRA());
+    this->file_stream.write((char *)&est, sizeof(Estudante));
+    
     // Saia da função
 }
         
