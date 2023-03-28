@@ -153,7 +153,7 @@ Estudante Siga::ObterEstudante(int idx)
     // Posicione o cursor para o inicio do arquivo
     this->file_stream.seekg(0, this->file_stream.beg);
     // Posicione o cursor para a posição idx
-    this->file_stream.seekg(idx, this->file_stream.beg);
+    this->file_stream.seekg(idx*sizeof(Estudante), this->file_stream.beg);
     // Leia o estudante na posição idx
     this->file_stream.read((char *)&est, sizeof(Estudante));
     // Retorne o estudante
